@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slice House - Join Us</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #d84315 0%, #bf360c 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated Background Elements */
+        .bg-pizza {
+            position: absolute;
+            font-size: 5rem;
+            opacity: 0.08;
+            animation: float 15s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        .bg-pizza:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+        .bg-pizza:nth-child(2) { top: 70%; right: 10%; animation-delay: 5s; }
+        .bg-pizza:nth-child(3) { bottom: 15%; left: 15%; animation-delay: 10s; }
+        .bg-pizza:nth-child(4) { top: 40%; right: 20%; animation-delay: 3s; font-size: 4rem; }
+        .bg-pizza:nth-child(5) { top: 60%; left: 40%; animation-delay: 7s; font-size: 6rem; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-50px) rotate(180deg); }
+        }
+
+        /* Form Container */
+        .form-container {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 2rem;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            max-width: 480px;
+            width: 100%;
+            position: relative;
+            animation: slideUp 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 10;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Logo/Header */
+        .form-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-logo {
+            font-size: 3rem;
+            animation: rotateLogo 3s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes rotateLogo {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(15deg) scale(1.1); }
+        }
+
+        .form-title {
+            font-size: 1.8rem;
+            color: #d84315;
+            margin: 0.5rem 0 0.3rem;
+            font-weight: bold;
+        }
+
+        .form-subtitle {
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        /* Tabs for Login/Register */
+        .form-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 0.7rem;
+            border: none;
+            background: #f5f5f5;
+            color: #666;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #ff6f00, #ff8f00);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 111, 0, 0.4);
+        }
+
+        /* Form Content */
+        .form-content {
+            display: none;
+        }
+
+        .form-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Group */
+        .form-group {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .label-icon {
+            font-size: 1rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff6f00;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(255, 111, 0, 0.1);
+        }
+
+        /* Password Strength Indicator */
+        .password-strength {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .strength-weak { width: 33%; background: #f44336; }
+        .strength-medium { width: 66%; background: #ff9800; }
+        .strength-strong { width: 100%; background: #4caf50; }
+
+        /* Toggle Password Visibility */
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 2.5rem;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: #ff6f00;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 0.85rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #ff6f00, #ff8f00);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 8px 20px rgba(255, 111, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-submit:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 111, 0, 0.5);
+        }
+
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-submit span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        /* Social Login Buttons */
+        .social-login {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-btn.google {
+            color: #db4437;
+        }
+
+        .social-btn.google:hover {
+            border-color: #db4437;
+            background: #fef5f4;
+        }
+
+        .social-btn.facebook {
+            color: #1877f2;
+        }
+
+        .social-btn.facebook:hover {
+            border-color: #1877f2;
+            background: #f0f6ff;
+        }
+
+        .social-icon {
+            font-size: 1.1rem;
+        }
+
+        /* Links */
+        .form-links {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .form-links a {
+            color: #ff6f00;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .form-links a:hover {
+            color: #ff8f00;
+            text-decoration: underline;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 0.3rem;
+            font-size: 0.85rem;
+        }
+
+        /* Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.8rem 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+            }
+
+            .social-login {
+                flex-direction: column;
+            }
+
+            .bg-pizza {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 1.2rem;
+            }
+
+            .form-header {
+                margin-bottom: 1rem;
+            }
+
+            .form-logo {
+                font-size: 2.5rem;
+            }
+
+            .form-title {
+                font-size: 1.4rem;
+            }
+
+            .tab-btn {
+                font-size: 0.85rem;
+                padding: 0.6rem;
+            }
+
+            .form-group label {
+                font-size: 0.85rem;
+            }
+
+            .form-group input {
+                padding: 0.7rem 0.9rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Success Animation */
+        @keyframes success {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .success-animation {
+            animation: success 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Pizza Decorations -->
+    <div class="bg-pizza">🍕</div>
+    <div class="bg-pizza">🍕</div>
+    <div class="bg-pizza">🍕</div>
+    <div class="bg-pizza">🍕</div>
+    <div class="bg-pizza">🍕</div>
+
+    <!-- Form Container -->
+    <div class="form-container">
+        <!-- Header -->
+        <div class="form-header">
+            <div class="form-logo">🍕</div>
+            <h1 class="form-title">Slice House</h1>
+            <p class="form-subtitle">Join us for the best pizza experience!</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="form-tabs">
+            <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+            <button class="tab-btn" onclick="switchTab('register')">Create Account</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form" class="form-content active">
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label for="login-email">
+                        <span class="label-icon">📧</span>
+                        Email Address
+                    </label>
+                    <input 
+                        type="email" 
+                        id="login-email" 
+                        name="email"
+                        placeholder="Enter your email" 
+                        required 
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password">
+                        <span class="label-icon">🔒</span>
+                        Password
+                    </label>
+                    <input 
+                        type="password" 
+                        id="login-password" 
+                        name="password"
+                        placeholder="Enter your password" 
+                        required 
+                    />
+                    <span class="password-toggle" onclick="togglePassword('login-password')">👁️</span>
+                </div>
+
+                <div class="forgot-password">
+                    <a href="#forgot">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span>🍕 Login to Slice House</span>
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>Or continue with</span>
+            </div>
+
+            <div class="social-login">
+                <button class="social-btn google" onclick="socialLogin('google')">
+                    <span class="social-icon">🔴</span>
+                    <span>Google</span>
+                </button>
+                <button class="social-btn facebook" onclick="socialLogin('facebook')">
+                    <span class="social-icon">📘</span>
+                    <span>Facebook</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" class="form-content">
+            <form th:action="@{/register}" th:object="${user}" method="post">
+                <div class="form-group">
+                    <label for="name">
+                        <span class="label-icon">👤</span>
+                        Full Name
+                    </label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        th:field="*{name}"
+                        placeholder="Enter your full name" 
+                        required 
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">
+                        <span class="label-icon">📧</span>
+                        Email Address
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        th:field="*{email}"
+                        placeholder="Enter your email" 
+                        required 
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <span class="label-icon">🔒</span>
+                        Password
+                    </label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        th:field="*{password}"
+                        placeholder="Create a strong password" 
+                        required 
+                        oninput="checkPasswordStrength()"
+                    />
+                    <span class="password-toggle" onclick="togglePassword('password')">👁️</span>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="strengthBar"></div>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" required />
+                    <label for="terms">I agree to the Terms & Conditions</label>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span>🍕 Create Account</span>
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>Or sign up with</span>
+            </div>
+
+            <div class="social-login">
+                <button class="social-btn google" onclick="socialLogin('google')">
+                    <span class="social-icon">🔴</span>
+                    <span>Google</span>
+                </button>
+                <button class="social-btn facebook" onclick="socialLogin('facebook')">
+                    <span class="social-icon">📘</span>
+                    <span>Facebook</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Switch between Login and Register tabs
+        function switchTab(tab) {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const tabs = document.querySelectorAll('.tab-btn');
+
+            tabs.forEach(btn => btn.classList.remove('active'));
+
+            if (tab === 'login') {
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+                tabs[0].classList.add('active');
+            } else {
+                registerForm.classList.add('active');
+                loginForm.classList.remove('active');
+                tabs[1].classList.add('active');
+            }
+        }
+
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const toggle = input.nextElementSibling.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                toggle.textContent = '👁️';
+            }
+        }
+
+        // Password strength checker
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strengthBar = document.getElementById('strengthBar');
+            
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+            strengthBar.className = 'password-strength-bar';
+            
+            if (strength <= 1) {
+                strengthBar.classList.add('strength-weak');
+            } else if (strength <= 3) {
+                strengthBar.classList.add('strength-medium');
+            } else {
+                strengthBar.classList.add('strength-strong');
+            }
+        }
+
+        // Social login handlers
+        function socialLogin(provider) {
+            // Add animation
+            const container = document.querySelector('.form-container');
+            container.classList.add('success-animation');
+            
+            setTimeout(() => {
+                container.classList.remove('success-animation');
+                alert(`Redirecting to ${provider} login...`);
+                // In real implementation, redirect to OAuth provider
+                // window.location.href = `/oauth2/authorization/${provider}`;
+            }, 500);
+        }
+
+        // Form submission animations
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const container = document.querySelector('.form-container');
+                container.classList.add('success-animation');
+            });
+        });
+    </script>
+</body>
+</html>
