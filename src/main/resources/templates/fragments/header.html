@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slice House - Premium Artisan Pizzas</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+
+<!-- Navigation Bar -->
+<nav>
+    <div class="brand">
+        <span class="brand-logo">🍕</span>
+        <span class="brand-text">Slice House</span>
+    </div>
+
+    <div class="menu-toggle" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <ul class="nav-links" id="navMenu">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+
+        <li>
+            <a th:href="@{/cart}" class="cart-link">
+                <svg class="cart-svg" width="20" height="20" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+
+                <span class="cart-white">Cart</span>
+                <span class="cart-badge"
+                      th:if="${cartCount > 0}"
+                      th:text="${cartCount}">0</span>
+            </a>
+        </li>
+
+        <li>
+            <a th:href="@{/register}" class="login-link">Login</a>
+        </li>
+    </ul>
+</nav>
+
+<script>
+    function toggleMenu() {
+        const navMenu = document.getElementById('navMenu');
+        const menuToggle = document.querySelector('.menu-toggle');
+        navMenu.classList.toggle('active');
+        menuToggle.classList.toggle('active');
+    }
+
+    // Close menu when clicking a link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            document.getElementById('navMenu').classList.remove('active');
+            document.querySelector('.menu-toggle').classList.remove('active');
+        });
+    });
+</script>
+
+</body>
+</html>
