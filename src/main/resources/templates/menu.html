@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Slice House</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1410;
+            color: #fff;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #d84315, #bf360c);
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .brand-logo {
+            font-size: 2.5rem;
+        }
+
+        .brand-text {
+            background: linear-gradient(135deg, #fff, #ffeb3b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            padding: 0.7rem 1.3rem;
+            border-radius: 30px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Hero */
+        .menu-hero {
+            padding: 8rem 5% 4rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(216,67,21,0.9), rgba(191,54,12,0.9));
+        }
+
+        .menu-hero h1 {
+            font-size: 4rem;
+            background: linear-gradient(135deg, #fff, #ffeb3b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .menu-hero p {
+            font-size: 1.3rem;
+        }
+
+        /* Menu */
+        .menu-section {
+            padding: 4rem 5%;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .category-title {
+            font-size: 2.5rem;
+            color: #ffeb3b;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .menu-item {
+            background: linear-gradient(135deg, rgba(216,67,21,0.1), rgba(191,54,12,0.1));
+            border: 2px solid rgba(255,111,0,0.3);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: 0.3s;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-8px);
+            border-color: #ff6f00;
+            box-shadow: 0 15px 40px rgba(255,111,0,0.3);
+        }
+
+        /* Pizza Image */
+        .pizza-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            border: 2px solid rgba(255,111,0,0.3);
+        }
+
+        .item-image {
+            font-size: 5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+        }
+
+        .item-name {
+            font-size: 1.4rem;
+            color: #ffeb3b;
+        }
+
+        .item-price {
+            font-size: 1.4rem;
+            color: #ff6f00;
+            font-weight: bold;
+        }
+
+        .item-description {
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+
+        .add-to-cart-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, #ff6f00, #ff8f00);
+            color: #fff;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .add-to-cart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,111,0,0.5);
+        }
+
+        footer {
+            background: linear-gradient(135deg, #d84315, #bf360c);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .menu-hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav>
+    <div class="brand">
+        <span class="brand-logo">🍕</span>
+        <span class="brand-text">Slice House</span>
+    </div>
+
+    <div class="menu-toggle" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <ul class="nav-links" id="navMenu">
+        <li><a th:href="@{/}" >Home</a></li>
+        <li><a th:href="@{/menu}">Menu</a></li>
+        <li><a th:href="@{/about}">About</a></li>
+        <li><a th:href="@{/contact}">Contact</a></li>
+
+        <!-- Show login only if user is anonymous -->
+        <li sec:authorize="isAnonymous()">
+            <a th:href="@{/login}" class="login-link">Login</a>
+        </li>
+
+        <!-- Show logout only if user is authenticated -->
+        <li sec:authorize="isAuthenticated()">
+            <a th:href="@{/logout}" class="logout-link">Logout</a>
+        </li>
+
+        <!-- Cart -->
+        <li>
+            <a href="/cart" class="cart-link">
+                <svg class="cart-svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+               <span class="cart-white">Cart</span>
+                <span class="cart-badge"
+                      th:if="${cartCount > 0}"
+                      th:text="${cartCount}">0</span>
+            </a>
+        </li>
+       
+    </ul>
+</nav>
+        <!-- Auth buttons -->
+       
+            <li sec:authorize="isAnonymous()"><a th:href="@{/login}" class="login-link">Login</a></li>
+        </ul>
+    </nav>
+
+<!-- HERO -->
+<section class="menu-hero">
+    <h1>Our Menu</h1>
+    <p>Discover our delicious artisan pizzas</p>
+</section>
+
+<!-- MENU -->
+<section class="menu-section">
+    <h2 class="category-title">🍕 Classic Pizzas</h2>
+
+    <div class="menu-grid">
+        <div class="menu-item" th:each="pizza : ${pizzas}">
+
+            <!-- Image -->
+            <img th:if="${pizza.imageName != null}"
+                 th:src="@{'/uploads/' + ${pizza.imageName}}"
+                 th:alt="${pizza.name}"
+                 class="pizza-image"/>
+
+            <!-- Fallback -->
+            <div th:if="${pizza.imageName == null}" class="item-image">🍕</div>
+
+            <div class="item-header">
+                <h3 class="item-name" th:text="${pizza.name}">Pizza Name</h3>
+                <span class="item-price">
+                    ₹<span th:text="${#numbers.formatDecimal(pizza.price,1,2)}">299.00</span>
+                </span>
+            </div>
+
+            <p class="item-description" th:text="${pizza.description}"></p>
+
+            <a th:href="@{/cart/add/{id}(id=${pizza.id})}"
+               class="add-to-cart-btn">
+                Add to Cart
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>&copy; 2025 Slice House. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

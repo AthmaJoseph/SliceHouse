@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Pizza - Slice House Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #d84315 0%, #bf360c 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        /* Container */
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        .form-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.3rem;
+            color: #333;
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, #d84315, #ff6f00);
+            border-color: #d84315;
+            color: #fff;
+            transform: translateX(-3px);
+        }
+
+        .header-content h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #d84315, #ff6f00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3rem;
+        }
+
+        .header-content p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Form Group */
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.7rem;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .label-icon {
+            font-size: 1.1rem;
+        }
+
+        .required {
+            color: #f44336;
+        }
+
+        /* Input Fields */
+        .form-input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            color: #333;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ff6f00;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(255, 111, 0, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #999;
+        }
+
+        /* Textarea */
+        textarea.form-input {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Price Input */
+        .price-input-wrapper {
+            position: relative;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #d84315;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .price-input {
+            padding-left: 2.5rem;
+        }
+
+        .calculator-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        /* Image Upload */
+        .upload-area {
+            border: 2px dashed #d0d0d0;
+            border-radius: 10px;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: #f5f5f5;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #ff6f00;
+            background: #fff;
+        }
+
+        .upload-area.dragover {
+            border-color: #ff6f00;
+            background: rgba(255, 111, 0, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #999;
+        }
+
+        .upload-text {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-hint {
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* Preview Image */
+        .image-preview {
+            display: none;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .image-preview.active {
+            display: block;
+        }
+
+        .preview-img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 10px;
+            border: 2px solid #ffeb3b;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .remove-image {
+            display: block;
+            margin: 1rem auto 0;
+            padding: 0.5rem 1.5rem;
+            background: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .remove-image:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        /* Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 111, 0, 0.05);
+            border-radius: 10px;
+            border: 2px solid rgba(255, 111, 0, 0.2);
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .custom-checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            opacity: 0;
+            position: absolute;
+        }
+
+        .checkbox-custom {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ff6f00;
+            border-radius: 6px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .custom-checkbox:checked + .checkbox-custom {
+            background: linear-gradient(135deg, #ff6f00, #ff8f00);
+            border-color: #ff6f00;
+        }
+
+        .custom-checkbox:checked + .checkbox-custom::after {
+            content: '✓';
+            color: #fff;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .checkbox-label {
+            margin-left: 0.5rem;
+        }
+
+        .checkbox-label-title {
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .checkbox-label-desc {
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        /* Action Buttons */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6f00, #ff8f00);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 111, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 111, 0, 0.5);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #fff;
+            border-color: #d84315;
+            color: #d84315;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .form-header {
+                padding: 1rem;
+            }
+
+            .header-content h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-section {
+                padding: 1.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content h1 {
+                font-size: 1.3rem;
+            }
+
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <!-- Header -->
+        <div class="form-header">
+            <button class="back-btn" onclick="goBack()">←</button>
+            <div class="header-content">
+                <h1 th:text="${pizza.id == null} ? 'Add New Pizza' : 'Edit Pizza'">Add New Pizza</h1>
+                <p th:text="${pizza.id == null} ? 'Create a delicious new pizza for your menu' : 'Update pizza details'">Create a delicious new pizza for your menu</p>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div class="form-section">
+            <form th:action="@{/admin/pizzas/save}"
+            		  th:object="${pizza}"
+            		  method="post"
+            		  enctype="multipart/form-data"
+            		  id="pizzaForm">
+            		  <input type="hidden" th:field="*{id}"/>
+                <!-- Pizza Name -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="label-icon">🍕</span>
+                        <span>Pizza Name</span>
+                        <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="name"
+                        th:field="*{name}"
+                        class="form-input" 
+                        placeholder="e.g., Margherita Supreme"
+                        required
+                        name="pizzaName"
+                    />
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="label-icon">📝</span>
+                        <span>Description</span>
+                        <span class="required">*</span>
+                    </label>
+                    <textarea 
+                        class="form-input" 
+                        id="description"
+                        th:field="*{description}"
+                        placeholder="Describe your pizza's ingredients and flavors..."
+                        required
+                        name="description"
+                    ></textarea>
+                </div>
+
+                <!-- Price -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span>Price</span>
+                        <span class="required">*</span>
+                    </label>
+                    <div class="price-input-wrapper">
+                        <span class="currency-symbol">₹</span>
+                        <input 
+                            type="number" 
+                             id="price"
+                             th:field="*{price}"
+                            class="form-input price-input" 
+                            placeholder="0.0"
+                            step="0.01"
+                            min="0"
+                            required
+                            name="price"
+                        />
+                        <span class="calculator-icon">🔢</span>
+                    </div>
+                </div>
+
+                <!-- Pizza Image -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="label-icon">🖼️</span>
+                        <span>Pizza Image</span>
+                    </label>
+                    <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                        <div class="upload-icon">📤</div>
+                        <div class="upload-text">Click to upload or drag and drop</div>
+                        <div class="upload-hint">PNG, JPG or WEBP (MAX. 5MB)</div>
+                    </div>
+                    <input 
+                        type="file" 
+                        id="imageFile" 
+                        name="imageFile"
+                        accept="image/*"
+                        
+                    />
+                    <div class="image-preview" id="imagePreview">
+                        <img src="" alt="Preview" class="preview-img" id="previewImg" />
+                        <button type="button" class="remove-image" onclick="removeImage()">Remove Image</button>
+                    </div>
+                </div>
+
+                <!-- Availability -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="label-icon">✅</span>
+                        <span>Availability</span>
+                    </label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-wrapper">
+                            <input 
+                                type="checkbox" 
+                                id="available"
+                                 
+                        		   th:field="*{available}" 
+                                class="custom-checkbox"
+                                name="availability"
+                                checked
+                            />
+                            <label for="availability" class="checkbox-custom"></label>
+                        </div>
+                        <label for="availability" class="checkbox-label">
+                            <span class="checkbox-label-title">Mark as Available</span>
+                            <span class="checkbox-label-desc">This pizza will be visible and orderable on the menu</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <a href="/admin/pizzas" class="btn btn-secondary" >
+                        <span>✖</span>
+                        <span>Cancel</span>
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <span>💾</span>
+                        <span th:text="${pizza.id == null} ? 'Create Pizza' : 'Update Pizza'">Create Pizza</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Go back to admin panel
+        function goBack() {
+            if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
+                window.history.back();
+            }
+        }
+
+        // Handle file selection
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Check file size (5MB limit)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('imagePreview').classList.add('active');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Remove image
+        function removeImage() {
+            document.getElementById('fileInput').value = '';
+            document.getElementById('imagePreview').classList.remove('active');
+            document.getElementById('previewImg').src = '';
+        }
+
+        // Drag and drop functionality
+        const uploadArea = document.getElementById('uploadArea');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                document.getElementById('fileInput').files = dataTransfer.files;
+                handleFileSelect({ target: { files: [file] } });
+            }
+        });
+
+        // Form submission
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = {
+                pizzaName: formData.get('pizzaName'),
+                description: formData.get('description'),
+                price: formData.get('price'),
+                availability: formData.get('availability') === 'on'
+            };
+
+            console.log('Form Data:', data);
+            
+            // Show success message
+            alert('Pizza created successfully!');
+            
+            // In real implementation, send data to backend API
+            // Then redirect to admin panel
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.slice.model.Pizza;
 import com.slice.model.User;
 import com.slice.service.UserService;
 
@@ -21,6 +22,23 @@ public class AuthController {
 	public String home() {
 		return "index";
 	}
+	@GetMapping("/login")
+	public String showLogin(Model model) {
+	model.addAttribute("user",new User());
+	return "login";
+	}
+
+
+    @GetMapping("/about")
+    public String showAboutPage() {
+        return "about"; // corresponds to about.html
+    }
+
+    @GetMapping("/contact")
+    public String showContactPage() {
+        return "contact"; // corresponds to contact.html
+    }
+
 	@GetMapping("/register")
 	public String showRegister(Model model) {
 	model.addAttribute("user",new User());
@@ -42,5 +60,10 @@ public class AuthController {
 			model.addAttribute("error",e.getMessage());
 		}
 		return "login";
+	}
+	@GetMapping("/pizza-form")
+	public String showPizzaForm(Model model) {
+	    model.addAttribute("pizza", new Pizza()); 
+	    return "pizza-form"; // corresponds to pizza-form.html
 	}
 }

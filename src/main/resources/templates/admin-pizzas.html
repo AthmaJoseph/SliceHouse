@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slice House - Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #d84315 0%, #bf360c 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .admin-header {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 15px;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.6s ease;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .brand-admin {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .brand-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #d84315 0%, #ff6f00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+
+        .brand-subtitle {
+            font-size: 0.85rem;
+            color: #fff;
+            background: linear-gradient(135deg, #ff6f00, #ff8f00);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            border: none;
+            width: fit-content;
+            box-shadow: 0 2px 10px rgba(255, 111, 0, 0.3);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: 2px solid #d84315;
+            border-radius: 8px;
+            color: #d84315;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            border-color: #d84315;
+            color: #fff;
+            background: linear-gradient(135deg, #d84315, #bf360c);
+            box-shadow: 0 4px 15px rgba(216, 67, 21, 0.4);
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem;
+            animation: fadeIn 0.8s ease 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 12px;
+            padding: 1.8rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(255, 111, 0, 0.4);
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 0.8rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #d84315, #ff6f00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Management Section */
+        .management-section {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1.5rem;
+            animation: fadeIn 0.8s ease 0.4s both;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .section-title-group h2 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #d84315, #ff6f00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .add-pizza-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.9rem 2rem;
+            background: linear-gradient(135deg, #ff6f00, #ff8f00);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 111, 0, 0.3);
+        }
+
+        .add-pizza-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 111, 0, 0.5);
+        }
+
+        .add-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.9rem 1rem 0.9rem 3rem;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            color: #333;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #ff6f00;
+            box-shadow: 0 0 0 3px rgba(255, 111, 0, 0.1);
+            background: #fff;
+        }
+
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        /* Table */
+        .pizza-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .pizza-table thead {
+            background: linear-gradient(135deg, rgba(216, 67, 21, 0.1), rgba(255, 111, 0, 0.1));
+        }
+
+        .pizza-table th {
+            padding: 1rem;
+            text-align: left;
+            color: #d84315;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #ffeb3b;
+        }
+
+        .pizza-table tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .pizza-table tbody tr:hover {
+            background: rgba(255, 111, 0, 0.05);
+            box-shadow: 0 2px 8px rgba(255, 111, 0, 0.1);
+        }
+
+        .pizza-table td {
+            padding: 1.5rem 1rem;
+            color: #555;
+            vertical-align: middle;
+        }
+
+        .pizza-name {
+            color: #333;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .pizza-description {
+            color: #666;
+            font-size: 0.9rem;
+            max-width: 400px;
+        }
+
+        .pizza-image {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid #ffeb3b;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .pizza-price {
+            color: #ff6f00;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-available {
+            background: rgba(76, 175, 80, 0.15);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .status-unavailable {
+            background: rgba(158, 158, 158, 0.15);
+            color: #9e9e9e;
+            border: 1px solid rgba(158, 158, 158, 0.3);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.6rem 1.2rem;
+            border: 1px solid;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background: rgba(33, 150, 243, 0.1);
+            border-color: rgba(33, 150, 243, 0.3);
+            color: #2196f3;
+        }
+
+        .edit-btn:hover {
+            background: rgba(33, 150, 243, 0.2);
+            border-color: #2196f3;
+        }
+
+        .delete-btn {
+            background: rgba(244, 67, 54, 0.1);
+            border-color: rgba(244, 67, 54, 0.3);
+            color: #f44336;
+        }
+
+        .delete-btn:hover {
+            background: rgba(244, 67, 54, 0.2);
+            border-color: #f44336;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .pizza-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .add-pizza-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .search-input {
+                max-width: 100%;
+            }
+
+            .pizza-table th,
+            .pizza-table td {
+                padding: 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand-name {
+                font-size: 1.5rem;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+
+            .section-title-group h2 {
+                font-size: 1.5rem;
+            }
+
+            .pizza-image {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="brand-admin">
+            <div class="brand-name">SLICE HOUSE</div>
+            <div class="brand-subtitle">ADMIN PANEL</div>
+        </div>
+        <a href="/logout" class="logout-btn" >
+            <span>↪</span>
+            <span>Logout</span>
+        </a>
+    </header>
+
+    <!-- Stats Cards -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-label">Total Pizzas</div>
+            <div class="stat-value" th:text="${pizzas.size}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Available</div>
+            <div class="stat-value" th:text="${availableCount}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Unavailable</div>
+            <div class="stat-value" th:text="${unavailableCount}">0</div>
+        </div>
+    </div>
+
+    <!-- Pizza Management Section -->
+    <section class="management-section">
+        <div class="section-header">
+            <div class="section-title-group">
+                <h2>Pizza Management</h2>
+                <p class="section-subtitle">Manage your pizza menu and inventory</p>
+            </div>
+           <!--   <button class="add-pizza-btn" onclick="addNewPizza()">
+                <span class="add-icon">+</span>
+                <a th:href="@{/pizza-form}">Add New Pizza</a>
+            </button>-->
+            <span>
+    <a href="/admin/pizzas/add" class="add-pizza-btn">
+     <span class="add-icon">+</span>Add New Pizza</a>
+</span>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input 
+                type="text" 
+                class="search-input" 
+                placeholder="Search pizzas..." 
+                oninput="searchPizzas(this.value)"
+            />
+        </div>
+
+        <!-- Pizza Table -->
+        <table class="pizza-table">
+            <thead>
+                <tr>
+                    <th>NAME</th>
+                    <th>DESCRIPTION</th>
+                    <th>IMAGE</th>
+                    <th>PRICE</th>
+                    <th>STATUS</th>
+                    <th>ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody id="pizzaTableBody">
+                <tr th:each="pizza : ${pizzas}">
+                    <td class="pizza-name" th:text="${pizza.name}"></td>
+                    <td class="pizza-description" th:text="${pizza.description}" th:title="${pizza.description}"></td>
+                    <td>
+                       <img th:if="${pizza.imageName != null}"
+                             th:src="@{'/uploads/' + ${pizza.imageName}}"
+                             class="pizza-image"
+                             th:alt="${pizza.name}" />
+                             <div th:if="${pizza.imageName == null}" style="width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #666;">
+                            No Image
+                        </div>
+                    </td>
+                    <td class="pizza-price"  th:text="${pizza.price}"></td>
+                    <td>
+                       <span th:class="${pizza.available} ? 'status-badge status-available' : 'status-badge status-unavailable'"
+                              th:text="${pizza.available} ? 'Available' : 'Unavailable'">
+                            Available
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a th:href="@{/admin/pizzas/edit/{id}(id=${pizza.id})}" class="action-btn edit-btn" >
+                                <span>✏️</span>
+                                <span>Edit</span>
+                            </a>
+                            <a th:href="@{/admin/pizzas/delete/{id}(id=${pizza.id})}" class="action-btn delete-btn" >
+                                <span>🗑️</span>
+                                <span>Delete</span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
+    </section>
+
+    <script>
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Redirect to login page or home
+                window.location.href = '/';
+            }
+        }
+
+
+
+        // Search pizzas
+        function searchPizzas(query) {
+            const rows = document.querySelectorAll('#pizzaTableBody tr');
+            query = query.toLowerCase();
+
+            rows.forEach(row => {
+                const name = row.querySelector('.pizza-name').textContent.toLowerCase();
+                const description = row.querySelector('.pizza-description').textContent.toLowerCase();
+                
+                if (name.includes(query) || description.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Add smooth scroll animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const rows = document.querySelectorAll('#pizzaTableBody tr');
+            rows.forEach((row, index) => {
+                row.style.animation = `fadeIn 0.6s ease ${0.6 + (index * 0.1)}s both`;
+            });
+        });
+    </script>
+</body>
+</html>
