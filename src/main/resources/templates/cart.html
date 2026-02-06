@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,6 +70,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
+            text-decoration: none;
         }
 
         .cart-nav-btn:hover {
@@ -98,6 +99,7 @@
             font-size: 1rem;
             font-weight: 500;
             transition: color 0.3s ease;
+            text-decoration: none;
         }
 
         .logout-btn:hover {
@@ -169,6 +171,18 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
+        .item-image-fallback {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            background: rgba(255, 111, 0, 0.1);
+            border: 2px solid #ffeb3b;
+        }
+
         .item-details {
             flex: 1;
         }
@@ -222,6 +236,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            text-decoration: none;
         }
 
         .qty-btn:hover {
@@ -262,6 +277,8 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .remove-btn:hover {
@@ -355,18 +372,24 @@
             font-weight: bold;
         }
 
-        .checkout-btn {
+        .checkout-btn, .continue-btn {
             width: 100%;
             padding: 1.2rem;
-            background: linear-gradient(135deg, #ff6f00, #ff8f00);
-            border: none;
             border-radius: 12px;
-            color: #fff;
             font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 1.5rem;
             transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .checkout-btn {
+            background: linear-gradient(135deg, #ff6f00, #ff8f00);
+            border: none;
+            color: #fff;
+            margin-top: 1.5rem;
             box-shadow: 0 4px 15px rgba(255, 111, 0, 0.3);
         }
 
@@ -376,17 +399,10 @@
         }
 
         .continue-btn {
-            width: 100%;
-            padding: 1.2rem;
             background: transparent;
             border: 2px solid #ff6f00;
-            border-radius: 12px;
             color: #ff6f00;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
             margin-top: 1rem;
-            transition: all 0.3s ease;
         }
 
         .continue-btn:hover {
@@ -457,12 +473,25 @@
             <li><a th:href="@{/about}">About</a></li>
             <li><a th:href="@{/contact}">Contact</a></li>
             <li>
-                <button class="cart-nav-btn">
-                    🛒 Cart
-                    <span class="cart-count" id="navCartCount">3</span>
-                </button>
+                <a href="/cart" class="cart-link">
+                <svg class="cart-svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+               <span class="cart-white">Cart</span>
+                <span class="cart-badge"
+                      th:if="${cartCount > 0}"
+                      th:text="${cartCount}">0</span>
+            </a>
             </li>
-            <li><button class="logout-btn" onclick="logout()">Logout</button></li>
+            <li sec:authorize="isAuthenticated()">
+                <a th:href="@{/logout}" class="logout-btn">Logout</a>
+            </li>
+            <li sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" class="logout-btn">Login</a>
+            </li>
         </ul>
     </nav>
 
@@ -472,37 +501,59 @@
         <p>Review your delicious selections</p>
     </div>
 
+    <!-- Empty Cart -->
+    <div th:if="${cartItems.size()== 0}" class="cart-container">
+        <div class="empty-cart" style="grid-column: 1 / -1;">
+            <div class="empty-cart-icon">🍕</div>
+            <h2>Your cart is empty</h2>
+            <p>Add some delicious pizzas to get started!</p>
+            <a th:href="@{/menu}" class="checkout-btn">Browse Menu</a>
+        </div>
+    </div>
+
     <!-- Cart Container -->
-    <div class="cart-container">
+    <div th:if="${cartItems.size()> 0}" class="cart-container">
         <!-- Cart Items -->
-        <div class="cart-items" id="cartItems">
-            <!-- Cart Item 1 -->
-            <div class="cart-item">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23d84315'/%3E%3Ccircle cx='50' cy='50' r='40' fill='%23ffeb3b'/%3E%3Ccircle cx='35' cy='35' r='8' fill='%23f44336'/%3E%3Ccircle cx='65' cy='35' r='8' fill='%23f44336'/%3E%3Ccircle cx='50' cy='55' r='8' fill='%23f44336'/%3E%3Ccircle cx='35' cy='65' r='8' fill='%23f44336'/%3E%3Ccircle cx='65' cy='65' r='8' fill='%23f44336'/%3E%3C/svg%3E" alt="Classic Pepperoni" class="item-image">
+        <div class="cart-items">
+            <!-- Cart Item Loop -->
+            <div class="cart-item" th:each="item : ${cartItems}">
+                <!-- Pizza Image -->
+                <img th:if="${item.pizza.imageName != null}"
+                     th:src="@{'/uploads/' + ${item.pizza.imageName}}"
+                     th:alt="${item.pizza.name}"
+                     class="item-image"/>
+                
+                <!-- Fallback Pizza Icon -->
+                <div th:if="${item.pizza.imageName == null}" class="item-image-fallback">🍕</div>
                 
                 <div class="item-details">
-                    <h3 class="item-name">Classic Pepperoni</h3>
-                    <p class="item-price"><span class="item-price-label"></span>₹365.0 each</p>
+                    <h3 class="item-name" th:text="${item.pizza.name}">Pizza Name</h3>
+                    <p class="item-price">
+                        ₹<span th:text="${item.pizza.price}">299.00</span> each
+                    </p>
                 </div>
 
                 <div class="item-controls">
                     <div class="quantity-control">
                         <span class="qty-label">Qty:</span>
-                        <button class="qty-btn" onclick="updateQuantity(0, -1)">-</button>
-                        <span class="qty-display" id="qty-0">3</span>
-                        <button class="qty-btn" onclick="updateQuantity(0, 1)">+</button>
+                        <a th:href="@{/cart/decrease/{id}(id=${item.pizza.id})}" 
+                           class="qty-btn">-</a>
+                        <span class="qty-display" th:text="${item.quantity}">1</span>
+                        <a th:href="@{/cart/increase/{id}(id=${item.pizza.id})}" 
+                           class="qty-btn">+</a>
                     </div>
 
                     <div class="item-total">
-                        <div class="item-total-label"></div>
-                        <div class="item-total-price" id="total-0">₹1095.00</div>
+                        <div class="item-total-price">
+                            ₹<span th:text="${#numbers.formatDecimal(item.pizza.price * item.quantity, 1, 2)}">299.00</span>
+                        </div>
                     </div>
 
-                    <button class="remove-btn" onclick="removeItem(0)">Remove</button>
+                    <a th:href="@{/cart/remove/{id}(id=${item.pizza.id})}" 
+                       class="remove-btn"
+                       onclick="return confirm('Remove this item from cart?')">Remove</a>
                 </div>
             </div>
-
-            <!-- Add more items dynamically here -->
         </div>
 
         <!-- Order Summary -->
@@ -511,124 +562,35 @@
             
             <div class="summary-row">
                 <span class="summary-label">Subtotal</span>
-                <span class="summary-value" id="subtotal">₹1095.00</span>
+                <span class="summary-value">
+                    ₹<span th:text="${#numbers.formatDecimal(subtotal, 1, 2)}">0.00</span>
+                </span>
             </div>
 
             <div class="summary-row">
                 <span class="summary-label">Delivery Fee</span>
-                <span class="summary-value" id="deliveryFee">₹20.00</span>
+                <span class="summary-value">
+                    ₹<span th:text="${#numbers.formatDecimal(deliveryFee, 1, 2)}">20.00</span>
+                </span>
             </div>
 
             <div class="summary-row">
                 <span class="summary-label">Tax (8%)</span>
-                <span class="summary-value" id="tax">₹87.60</span>
+                <span class="summary-value">
+                    ₹<span th:text="${#numbers.formatDecimal(tax, 1, 2)}">0.00</span>
+                </span>
             </div>
 
             <div class="summary-row summary-total">
                 <span class="total-label">Total</span>
-                <span class="total-value" id="grandTotal">₹1202.60</span>
+                <span class="total-value">
+                    ₹<span th:text="${#numbers.formatDecimal(grandTotal, 1, 2)}">0.00</span>
+                </span>
             </div>
 
-            <button class="checkout-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
-            <button class="continue-btn" onclick="continueShopping()">Continue Shopping</button>
+            <a th:href="@{/checkout}" class="checkout-btn">Proceed to Checkout</a>
+            <a th:href="@{/menu}" class="continue-btn">Continue Shopping</a>
         </div>
     </div>
-
-    <script>
-        // Cart data
-        let cartItems = [
-            {
-                id: 0,
-                name: 'Classic Pepperoni',
-                price: 365.0,
-                quantity: 3,
-                image: 'pepperoni.jpg'
-            }
-        ];
-
-        // Update quantity
-        function updateQuantity(itemId, change) {
-            const item = cartItems.find(i => i.id === itemId);
-            if (item) {
-                item.quantity += change;
-                if (item.quantity < 1) {
-                    item.quantity = 1;
-                }
-                document.getElementById(`qty-${itemId}`).textContent = item.quantity;
-                updateItemTotal(itemId);
-                updateSummary();
-            }
-        }
-
-        // Update item total
-        function updateItemTotal(itemId) {
-            const item = cartItems.find(i => i.id === itemId);
-            if (item) {
-                const total = item.price * item.quantity;
-                document.getElementById(`total-${itemId}`).textContent = `₹${total.toFixed(2)}`;
-            }
-        }
-
-        // Remove item
-        function removeItem(itemId) {
-            if (confirm('Remove this item from cart?')) {
-                cartItems = cartItems.filter(i => i.id !== itemId);
-                renderCart();
-                updateSummary();
-            }
-        }
-
-        // Update summary
-        function updateSummary() {
-            const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const deliveryFee = 20.00;
-            const taxRate = 0.08;
-            const tax = subtotal * taxRate;
-            const total = subtotal + deliveryFee + tax;
-
-            document.getElementById('subtotal').textContent = `₹${subtotal.toFixed(2)}`;
-            document.getElementById('deliveryFee').textContent = `₹${deliveryFee.toFixed(2)}`;
-            document.getElementById('tax').textContent = `₹${tax.toFixed(2)}`;
-            document.getElementById('grandTotal').textContent = `₹${total.toFixed(2)}`;
-            document.getElementById('navCartCount').textContent = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-        }
-
-        // Render cart
-        function renderCart() {
-            const container = document.getElementById('cartItems');
-            
-            if (cartItems.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-cart">
-                        <div class="empty-cart-icon">🍕</div>
-                        <h2>Your cart is empty</h2>
-                        <p>Add some delicious pizzas to get started!</p>
-                        <button class="checkout-btn" onclick="continueShopping()">Browse Menu</button>
-                    </div>
-                `;
-            }
-        }
-
-        // Proceed to checkout
-        function proceedToCheckout() {
-            alert('Proceeding to checkout...');
-            // In real implementation: window.location.href = '/checkout';
-        }
-
-        // Continue shopping
-        function continueShopping() {
-            window.location.href = '/menu';
-        }
-
-        // Logout
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                window.location.href = '/';
-            }
-        }
-
-        // Initialize
-        updateSummary();
-    </script>
 </body>
 </html>
